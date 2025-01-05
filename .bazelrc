@@ -1,1 +1,7 @@
 build --verbose_failures
+
+common:ci --color=no
+common:ci --curses=no
+common:ci --show_timestamps
+
+try-import %workspace%/user.bazelrc

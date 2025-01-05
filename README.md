@@ -13,7 +13,14 @@ See the [documentation](https://kiron1.github.io/rules_mdbook/) or the
 For the `MODULE.bazel` file:
 
 ```py
-bazel_dep(name = "rules_mdbook", version = "0.0.0")
+bazel_dep(name = "rules_mdbook", version = "0.0.1")
+# Until `rules_mdbook` is included in the BCR, we can use `archive_override`
+archive_override(
+    module_name = "rules_mdbook",
+    urls = ["https://github.com/kiron1/rules_mdbook/archive/refs/tags/v0.0.1.tar.gz"],
+    strip_prefix = "rules_mdbook-0.0.1/",
+    integrity = "sha256-U2ZQ/w89JLBcAbN6gffga5I2HcjGl4SEJG3MrNujlME=",
+)
 ```
 
 In a `BUILD.bazel` file:

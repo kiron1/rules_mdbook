@@ -1,0 +1,7 @@
+filegroup(
+    name = "bin",
+    srcs = [
+        "mdbook",
+    ],
+    visibility = ["//visibility:public"],
+)

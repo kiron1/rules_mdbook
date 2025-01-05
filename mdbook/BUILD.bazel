@@ -1,0 +1,32 @@
+load("//mdbook:toolchain.bzl", "mdbook_toolchain")
+
+exports_files(["book.toml.tpl"])
+
+sh_binary(
+    name = "dummy",
+    srcs = ["dummy.sh"],
+)
+
+toolchain_type(
+    name = "toolchain_type",
+    visibility = ["//mdbook/toolchains:__subpackages__"],
+)
+
+mdbook_toolchain(
+    name = "mdbook_x86_64_apple_darwin",
+    compiler_path = "@mdbook_x86_64_apple_darwin//:bin",
+    # compiler_path = ":dummy.sh",
+    visibility = ["//mdbook/toolchains:__subpackages__"],
+)
+
+mdbook_toolchain(
+    name = "mdbook_x86_64_linux",
+    compiler_path = "@mdbook_x86_64_linux//:bin",
+    visibility = ["//mdbook/toolchains:__subpackages__"],
+)
+
+mdbook_toolchain(
+    name = "mdbook_x86_64_windows",
+    compiler_path = "@mdbook_x86_64_windows//:bin",
+    visibility = ["//mdbook/toolchains:__subpackages__"],
+)

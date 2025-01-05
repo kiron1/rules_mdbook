@@ -1,0 +1,36 @@
+load("//mdbook:defs.bzl", "md_book")
+
+filegroup(
+    name = "mdbook_macos",
+    srcs = select({
+        "@platforms//cpu:x86_64": ["@mdbook_x86_64_apple_darwin//:bin"],
+    }),
+)
+
+filegroup(
+    name = "mdbook",
+    srcs = select({
+        "@platforms//os:linux": ["@mdbook_x86_64_linux//:bin"],
+        "@platforms//os:macos": [":mdbook_macos"],
+        "@platforms//os:windows": ["@mdbook_x86_64_windows//:bin"],
+    }),
+)
+
+genrule(
+    name = "mdbook_version",
+    outs = ["mdbook_version.txt"],
+    cmd = "$(location :mdbook) --version > $@",
+    tools = [":mdbook"],
+)
+
+md_book(
+    name = "doc",
+    srcs = [
+        "SUMMARY.md",
+        "reference.md",
+        "usage.md",
+    ],
+    authors = ["Kiron"],
+    data = [":mdbook_version"],
+    title = "mdBook rules for Bazel",
+)

@@ -1,0 +1,29 @@
+toolchain(
+    name = "mdbook_x86_64_apple_darwin_toolchain",
+    exec_compatible_with = [
+        "@platforms//os:macos",
+        "@platforms//cpu:x86_64",
+    ],
+    toolchain = "//mdbook:mdbook_x86_64_apple_darwin",
+    toolchain_type = "//mdbook:toolchain_type",
+)
+
+toolchain(
+    name = "mdbook_x86_64_linux_toolchain",
+    exec_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+    toolchain = "//mdbook:mdbook_x86_64_linux",
+    toolchain_type = "//mdbook:toolchain_type",
+)
+
+toolchain(
+    name = "mdbook_x86_64_windows_toolchain",
+    exec_compatible_with = [
+        "@platforms//os:windows",
+        "@platforms//cpu:x86_64",
+    ],
+    toolchain = "//mdbook:mdbook_x86_64_windows",
+    toolchain_type = "//mdbook:toolchain_type",
+)

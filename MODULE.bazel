@@ -1,0 +1,34 @@
+module(name = "rules_mdbook")
+
+bazel_dep(name = "platforms", version = "0.0.10")
+
+register_toolchains("//mdbook/toolchains:all")
+
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "mdbook_x86_64_apple_darwin",
+    integrity = "sha256-DlcGPAKwMaL6L964L1WzZFJYztJQ3DPaL7RCr+OpyF0=",
+    urls = [
+        "https://github.com/rust-lang/mdBook/releases/download/v0.4.41/mdbook-v0.4.41-x86_64-apple-darwin.tar.gz",
+    ],
+    build_file = "//bazel:mdbook.BUILD.bazel",
+)
+
+http_archive(
+    name = "mdbook_x86_64_linux",
+    integrity = "sha256-YJLPDgILZRHTZYnjZ57RkePG0PhuNvRU2/4Sa4RhSak=",
+    urls = [
+        "https://github.com/rust-lang/mdBook/releases/download/v0.4.41/mdbook-v0.4.41-x86_64-unknown-linux-gnu.tar.gz",
+    ],
+    build_file = "//bazel:mdbook.BUILD.bazel",
+)
+
+http_archive(
+    name = "mdbook_x86_64_windows",
+    integrity = "sha256-qLvBkg5D3IjS0Q0OOica+GO7b3ZUXGzezDXdGzCFKoY=",
+    urls = [
+        "https://github.com/rust-lang/mdBook/releases/download/v0.4.43/mdbook-v0.4.43-x86_64-pc-windows-msvc.zip",
+    ],
+    build_file = "//bazel:mdbook-windows.BUILD.bazel",
+)

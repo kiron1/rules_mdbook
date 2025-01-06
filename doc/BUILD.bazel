@@ -27,8 +27,10 @@ md_book(
     name = "doc",
     srcs = [
         "SUMMARY.md",
+        "example.md",
+        "intro.md",
+        "platforms.md",
         "reference.md",
-        "usage.md",
     ],
     authors = ["Kiron"],
     data = [":mdbook_version"],

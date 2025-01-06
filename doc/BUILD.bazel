@@ -8,9 +8,17 @@ filegroup(
 )
 
 filegroup(
+    name = "mdbook_linux",
+    srcs = select({
+        "@platforms//cpu:aarch64": ["@mdbook_aarch64_linux//:bin"],
+        "@platforms//cpu:x86_64": ["@mdbook_x86_64_linux//:bin"],
+    }),
+)
+
+filegroup(
     name = "mdbook",
     srcs = select({
-        "@platforms//os:linux": ["@mdbook_x86_64_linux//:bin"],
+        "@platforms//os:linux": [":mdbook_linux"],
         "@platforms//os:macos": [":mdbook_macos"],
         "@platforms//os:windows": ["@mdbook_x86_64_windows//:bin"],
     }),

@@ -16,6 +16,15 @@ http_archive(
 )
 
 http_archive(
+    name = "mdbook_aarch64_linux",
+    integrity = "sha256-ZH1xlR/Glq3IxJmkNjuxohBFoMc0gY8Het2OxEd62BQ=",
+    urls = [
+        "https://github.com/rust-lang/mdBook/releases/download/v0.4.43/mdbook-v0.4.43-aarch64-unknown-linux-musl.tar.gz",
+    ],
+    build_file = "//bazel:mdbook.BUILD.bazel",
+)
+
+http_archive(
     name = "mdbook_x86_64_linux",
     integrity = "sha256-0gwvIOscEX3F6+7BIOLS9kVckP6LTyG3RmYl2LZ7nmA=",
     urls = [

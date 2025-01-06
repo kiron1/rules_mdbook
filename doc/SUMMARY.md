@@ -1,9 +1,12 @@
-# `mdBook` Bazel Toolchain
+# Summary
 
-With the `rules_mdbook` we can build mdBooks directly from Bazel.
-
-[Usage](usage.md)
+[Introduction](intro.md)
 
 ---
 
-[Reference](reference.md)
+- [Example](example.md)
+- [Supported platforms](platforms.md)
+
+---
+
+[Ruiles Reference](reference.md)

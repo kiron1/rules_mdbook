@@ -6,12 +6,16 @@ Add the following content into your `MODULE.bazel` file:
 bazel_dep(name = "rules_mdbook", version = "0.0.0")
 ```
 
+For a copy and past ready snippet, see
+[the latest release](https://github.com/kiron1/rules_mdbook/releases/latest)
+page.
+
 # Building a mdBook
 
 Add the following content in one of the `BUILD.bazel` files:
 
 ```py
-load("//mdbook:defs.bzl", "md_book")
+load("@rules_mdbook//mdbook:defs.bzl", "md_book")
 
 md_book(
     name = "book",

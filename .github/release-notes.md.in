@@ -1,0 +1,15 @@
+# `rules_mdbook` ${VERSION}
+
+Additional documentation can be found at: https://kiron1.github.io/rules_mdbook/
+
+## Bzlmod
+
+```python
+bazel_dep(name = "rules_mdbook", version = "${VERSION}")
+# Until `rules_mdbook` is included in the BCR, we can use `archive_override`
+archive_override(
+    module_name = "rules_mdbook",
+    urls = ["https://github.com/${REPO}/releases/download/v${VERSION}/rules_mdbook-v${VERSION}.tar.gz"],
+    integrity = "${ARCHIVE_INTEGRITY}",
+)
+```

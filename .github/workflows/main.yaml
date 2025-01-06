@@ -37,7 +37,7 @@ jobs:
           # - build: macos
           #   os: macos-latest
           - build: linux
-            os: ubuntu-latest
+            os: ubuntu-24.04
           - build: windows
             os: windows-latest
 
@@ -57,9 +57,8 @@ jobs:
 
   mkrelease:
     name: Create Release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: bazel_build
-    if: github.event_name == 'workflow_dispatch'
 
     permissions:
       contents: write
@@ -67,12 +66,46 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Create Release
+      - name: Environment variables
         run: |
-          gh release create v${VERSION} --generate-notes
+          ARCHIVE_NAME=rules_mdbook-v${VERSION}.tar.gz
+          printf 'ARCHIVE=%s/.github/%s\n' "${WORKSPACE}" "${ARCHIVE_NAME}" | tee -a "${GITHUB_ENV}"
+          printf 'ARCHIVE_NAME=%s\n' "${ARCHIVE_NAME}" | tee -a "${GITHUB_ENV}"
+          printf 'REPO=%s\n' "${REPO}" | tee -a "${GITHUB_ENV}"
+          printf 'VERSION=%s\n' "${VERSION}" | tee -a "${GITHUB_ENV}"
+          printf 'WORKSPACE=%s\n' "${WORKSPACE}" | tee -a "${GITHUB_ENV}"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ github.event.inputs.version }}
+          REPO: ${{ github.repository }}
+          VERSION: ${{ github.event.inputs.version || github.sha }}
+          WORKSPACE: ${{ github.workspace }}
+      - name: Create archive
+        run: |
+          tar -czf "${ARCHIVE}" -C "${WORKSPACE}" --exclude=".git" --exclude=".github" *
+      - name: Show
+        run: |
+          find . -path ./.git -prune -o -path ./.jj -prune -o -type f
+      - name: Generate SRI
+        run: |
+          ARCHIVE_INTEGRITY=$(openssl dgst -sha256 -binary "${ARCHIVE}" | openssl base64 -A)
+          printf 'ARCHIVE_INTEGRITY=sha256-%s\n' "${ARCHIVE_INTEGRITY}" | tee -a "${GITHUB_ENV}"
+      - name: Generate release notes
+        run: |
+          envsubst < .github/release-notes.md.in > release-notes.md
+          gh api repos/${REPO}/releases/generate-notes -f tag_name=v${VERSION} | jq -r .body >> release-notes.md
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Show release notes
+        run: |
+          cat release-notes.md
+      - name: Create Release
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          gh release create v${VERSION} --notes-file release-notes.md
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Summary
+        run: |
+          cat release-notes.md >> "${GITHUB_STEP_SUMMARY}"
 
   # The success job is here to consolidate the total success/failure state of
   # all other jobs. This job is then included in the GitHub branch protection
@@ -83,8 +116,8 @@ jobs:
     name: Success gate
     if: always()
     needs:
-      - bazel_build
-    runs-on: ubuntu-latest
+      - mkrelease
+    runs-on: ubuntu-24.04
     steps:
       - run: jq --exit-status 'all(.result == "success")' <<< '${{ toJson(needs) }}'
       - name: Done

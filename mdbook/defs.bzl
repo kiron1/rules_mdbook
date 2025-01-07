@@ -9,19 +9,17 @@ def _md_book_impl(ctx):
         fail("Only one SUMMARY.md file in srcs allowed, provided {}".format(len(summary_md)))
 
     dest_dir = ctx.actions.declare_directory("{}.mdbook".format(ctx.label.name))
-    src_dir = summary_md[0].dirname
-    print(src_dir)
 
+    # mdBook works relative from the root directory (which is the directory with the book.toml file), but
+    # Bazel expects us to work from the work from the output_path / bazel-bin path.
+    # Additionally output files and srcs are in a different hirachy within the output_path / bazel-bin path.
+    # Create symlinks to all srcs and data files to make the output hirachy look like what the user will expect.
     outputs = [(ctx.actions.declare_file(f.path[len(ctx.label.package) + 1:]), f) for f in ctx.files.srcs]
     for (o, t) in outputs:
         ctx.actions.symlink(output = o, target_file = t)
 
     book_toml = ctx.actions.declare_file("book.toml")
 
-    # mdBook works relative from the root directory (which is the directory with the book.toml file), but
-    # Bazel expects us to work from the work from the output_path / bazel-bin path.
-    # We need to use relative paths in the book.toml which point back to the root as Bazel expects it.
-    repo_root = book_toml.path.count("/") * "../"
     ctx.actions.expand_template(
         template = ctx.file._book_toml_template,
         output = book_toml,
